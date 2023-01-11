@@ -15,6 +15,7 @@ class LoginScreen extends GetView {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     LoginController loginController = Get.put(LoginController());
+    AssetImage assetImage = AssetImage("assets/images/background.jpg");
     return Scaffold(
       body: Stack(
         children: [
@@ -31,14 +32,11 @@ class LoginScreen extends GetView {
                       transform: Matrix4.translationValues(0.0,
                           loginController.contentAnimation.value * height, 0.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // const Image(
-                          //   image: AssetImage("assets/images/Union.png"),
-                          // ),
                           Text(
-                            "Generate",
+                            "Unlock the Power of AI with GPT-3",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 47.38.sp,
@@ -50,7 +48,7 @@ class LoginScreen extends GetView {
                             height: 3.16.h,
                           ),
                           Text(
-                            "Beautiful images through Simple Text.",
+                            "Experience the cutting-edge of natural language processing with our advanced AI model.",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15.31.sp,
@@ -60,29 +58,23 @@ class LoginScreen extends GetView {
                           SizedBox(
                             height: 6.26.h,
                           ),
-                          Text(
-                            "AI Art Generator. Turn imagination into art. Our text-to-image AI empowers anyone to create attractive paintings, illustrations, and images. Describe what you want, and watch this app bring it to life.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.sp,
-                              height: 1.2,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
                         ],
                       ),
                     );
                   }),
             ),
           ),
-          // const Image(
-          //   height: double.infinity,
-          //   width: double.infinity,
-          //   fit: BoxFit.cover,
-          //   image: AssetImage("assets/images/images.png"),
-          // ),
+          Obx(() => AnimatedOpacity(
+                duration: const Duration(seconds: 2),
+                curve: Curves.linear,
+                opacity: loginController.opacity,
+                child: Image(
+                  height: double.infinity,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  image: assetImage,
+                ),
+              )),
           Align(
             alignment: Alignment.bottomCenter,
             child: AnimatedBuilder(
@@ -93,7 +85,7 @@ class LoginScreen extends GetView {
                         loginController.buttonAnimation.value * height, 0.0),
                     child: MainButton(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 42.h, vertical: 10.w),
+                          horizontal: 20.w, vertical: 20.h),
                       label: "Login with google",
                       onPress: () async {
                         GoogleSignInAccount? googleSignInAccount =
@@ -120,7 +112,7 @@ class LoginScreen extends GetView {
                     ),
                   );
                 }),
-          )
+          ),
         ],
       ),
     );

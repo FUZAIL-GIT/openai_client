@@ -21,8 +21,15 @@ class GoogleAuth {
       log("Error", error: e);
     }
 
-    await storage.write("email", null);
-    await storage.write("imageUrl", null);
-    await storage.write("displayName", null);
+    deleteData();
   }
+}
+
+Future<void> deleteData() async {
+  GetStorage storage = GetStorage();
+
+  await storage.write("email", null);
+  await storage.write("imageUrl", null);
+  await storage.write("displayName", null);
+  log("DATA DELETED FROM USRE STORAGE");
 }
