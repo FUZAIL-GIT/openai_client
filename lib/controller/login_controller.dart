@@ -32,7 +32,7 @@ class LoginController extends GetxController with GetTickerProviderStateMixin {
   void onInit() {
     super.onInit();
     //contentAnimation
-    Timer.periodic(Duration(milliseconds: 100), (timer) {
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (_opacity.value < 0.25) {
         _opacity.value = _opacity.value + 0.05;
       } else {

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openai_client/model/ai_model_model.dart';
@@ -35,11 +37,11 @@ class Data {
     //     Icons.image_outlined,
     //     size: 25.sp,
     //     color: Colors.grey.shade900,
-    //   ), 
+    //   ),
     //   modeColor: Colors.deepPurpleAccent,
     // ),
   ];
-  static List<AiModel> aiModelList = [
+  static List<AiModel> GPTModelList = [
     AiModel(
       modelName: "text-davinci-003",
       parentModelName: "GPT-3",

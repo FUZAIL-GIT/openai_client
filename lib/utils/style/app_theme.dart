@@ -32,4 +32,12 @@ class AppTheme {
       end: Alignment.topRight,
     ),
   ];
+  static const LinearGradient darkLinearGradient = LinearGradient(
+    colors: [
+      Color(0xff33393E),
+      Color(0xff474A4D),
+    ],
+    begin: Alignment.bottomLeft,
+    end: Alignment.topRight,
+  );
 }

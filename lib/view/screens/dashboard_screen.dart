@@ -14,14 +14,18 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            const Header(),
-            widgetSpace(15),
-            const ModeList(),
-            widgetSpace(15),
-            const ModelList(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Header(),
+              widgetSpace(15),
+              const ModeList(),
+              widgetSpace(15),
+              const AuthKey(),
+              widgetSpace(20),
+              const ModelList(),
+            ],
+          ),
         ),
       ),
     );

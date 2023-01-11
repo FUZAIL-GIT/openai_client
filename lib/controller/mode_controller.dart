@@ -20,6 +20,7 @@ class ModeController extends GetxController {
     modeColor: Colors.teal,
   ).obs;
   int get currentIndex => _currentIndex.value;
+  Mode get currentMode => _currentMode.value;
 
   void updateIndex(int value) {
     _currentIndex.value = value;

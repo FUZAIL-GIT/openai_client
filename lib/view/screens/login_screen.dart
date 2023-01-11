@@ -15,7 +15,7 @@ class LoginScreen extends GetView {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     LoginController loginController = Get.put(LoginController());
-    AssetImage assetImage = AssetImage("assets/images/background.jpg");
+    AssetImage assetImage = const AssetImage("assets/images/background.jpg");
     return Scaffold(
       body: Stack(
         children: [
