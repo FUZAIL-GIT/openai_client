@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:openai_client/model/ai_model_model.dart';
+import 'package:openai_client/utils/services/logging_service.dart';
 
 import '../api/api_config.dart';
 import '../model/chat_model.dart';
@@ -16,12 +17,21 @@ class ChatController extends GetxController {
   final AiModel aiModel;
   ChatController({required this.aiModel});
   final ScrollController listScrollController = ScrollController();
+  final RxBool _isTyping = false.obs;
+  final RxDouble _temperature = 0.4.obs;
+  double get temperature => _temperature.value;
+  final RxDouble _maxTokens = 200.0.obs;
+  double get maxTokens => _maxTokens.value;
   GlobalKey globalKey = GlobalKey();
   TextEditingController textEditingController = TextEditingController();
   final RxList<Message> _messageList = <Message>[].obs;
   List<Message> get messageList => _messageList.value;
+  bool get isTyping => _isTyping.value;
   var client = http.Client();
+
+  //scroll to down
   void scroll() {
+    _isTyping.value = false;
     Future.delayed(const Duration(milliseconds: 333)).then((_) {
       listScrollController.animateTo(
           listScrollController.position.maxScrollExtent,
@@ -30,11 +40,20 @@ class ChatController extends GetxController {
     });
   }
 
+  void onChangeTemperature(double value) {
+    _temperature.value = value;
+  }
+
+  void onChangeMaxToken(double value) {
+    _maxTokens.value = value;
+  }
+
+//send data to ai model
   Future<void> sendMessage() async {
     Message message = Message(0, textEditingController.text);
     _messageList.value.add(message);
     _messageList.refresh();
-
+    _isTyping.value = true;
     textEditingController.clear();
     Future.delayed(const Duration(milliseconds: 333)).then((_) {
       listScrollController.animateTo(
@@ -46,10 +65,10 @@ class ChatController extends GetxController {
       var body = jsonEncode({
         "model": aiModel.modelName,
         "prompt": message.text,
-        "max_tokens": 200,
-        "temperature": 0.9
+        "max_tokens": int.parse(_maxTokens.value.toStringAsFixed(0)),
+        "temperature": _temperature.value
       });
-      log(body);
+      talker.log(body);
       var header = {
         HttpHeaders.authorizationHeader: 'Bearer ${ApiConfig.YOUR_API_KEY}',
         HttpHeaders.contentTypeHeader: 'application/json'
@@ -60,8 +79,8 @@ class ChatController extends GetxController {
         body: body,
         headers: header,
       );
-      log(response.body);
-      log(response.statusCode.toString());
+      talker.good(response.body);
+      talker.good(response.statusCode.toString());
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         var answer = data["choices"][0]["text"]
@@ -78,7 +97,7 @@ class ChatController extends GetxController {
         _messageList.refresh();
       }
     } catch (e) {
-      log("Error", error: e);
+      talker.error(e);
     }
   }
 }

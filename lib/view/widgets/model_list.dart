@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:openai_client/model/ai_model_model.dart';
 import 'package:openai_client/utils/data/data.dart';
 import 'package:openai_client/utils/style/app_theme.dart';
 import 'package:openai_client/utils/widget_helper.dart';
@@ -49,13 +50,21 @@ class ModelList extends StatelessWidget {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   children: [
-                    if (modeController.currentMode.modeName
-                            .compareTo("Text Completions") ==
-                        0)
-                      for (int index = Data.GPTModelList.length - 1;
-                          index >= 0;
-                          index--)
-                        textCompletions(index),
+                    for (int index = modeController.currentMode.modeName
+                                    .compareTo("Text Completions") ==
+                                0
+                            ? Data.GPTModelList.length - 1
+                            : Data.CODExModelList.length - 1;
+                        index >= 0;
+                        index--)
+                      textCompletions(
+                        index,
+                        modeController.currentMode.modeName
+                                    .compareTo("Text Completions") ==
+                                0
+                            ? Data.GPTModelList[index]
+                            : Data.CODExModelList[index],
+                      ),
                   ],
                 ),
               ),
@@ -64,7 +73,7 @@ class ModelList extends StatelessWidget {
         ));
   }
 
-  Widget textCompletions(int index) {
+  Widget textCompletions(int index, AiModel aiModel) {
     return GestureDetector(
         child: Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -79,7 +88,7 @@ class ModelList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            Data.GPTModelList[index].modelName.toUpperCase(),
+            aiModel.modelName.toUpperCase(),
             textAlign: TextAlign.center,
             style: GoogleFonts.cabin(
               textStyle: TextStyle(
@@ -91,7 +100,7 @@ class ModelList extends StatelessWidget {
           ),
           widgetSpace(6),
           Text(
-            Data.GPTModelList[index].modelDescription.toUpperCase(),
+            aiModel.modelDescription.toUpperCase(),
             textAlign: TextAlign.center,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
@@ -103,36 +112,6 @@ class ModelList extends StatelessWidget {
               ),
             ),
           ),
-          // Text(
-          //   DateFormat('MMM,y').format(
-          //       Data.GPTModelList[i].modelTrainingDataDate),
-          //   style: GoogleFonts.anekDevanagari(
-          //     textStyle: TextStyle(
-          //       fontSize: 13.sp,
-          //       color: Colors.white,
-          //       fontWeight: FontWeight.normal,
-          //     ),
-          //   ),
-          // ),
-          // Row(
-          //   children: [
-          //     Expanded(
-          //       child: ElevatedButton(
-          //         onPressed: () {},
-          //         child: const Text("Read more"),
-          //         style: ElevatedButton.styleFrom(
-          //           backgroundColor: Colors.transparent,
-          //           side: const BorderSide(
-          //             width: 1,
-          //             color: AppTheme.primaryColor,
-          //           ),
-          //           shape: RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(10.r)),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           Row(
             children: [
               Expanded(
@@ -140,7 +119,7 @@ class ModelList extends StatelessWidget {
                   onPressed: () {
                     Get.to(
                       () => ChatScreen(
-                        aiModel: Data.GPTModelList[index],
+                        aiModel: aiModel,
                       ),
                     );
                   },

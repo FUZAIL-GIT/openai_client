@@ -8,8 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:openai_client/controller/chat_controller.dart';
 import 'package:openai_client/model/ai_model_model.dart';
 import 'package:openai_client/model/chat_model.dart';
+import 'package:openai_client/utils/loading_indicator.dart';
 import 'package:openai_client/utils/style/app_theme.dart';
 import 'package:openai_client/utils/widget_helper.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class ChatScreen extends StatelessWidget {
   final AiModel aiModel;
@@ -20,30 +22,111 @@ class ChatScreen extends StatelessWidget {
     ChatController chatController = Get.put(ChatController(aiModel: aiModel));
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        title: Text(
-          aiModel.modelName.toUpperCase(),
-          // style: AppTheme.bodyTextStyle(),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            appBar(aiModel, chatController, context),
+            messageList(chatController),
+            textFormField(chatController),
+          ],
         ),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-            )),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          messageList(chatController),
-          textFormField(chatController),
-        ],
       ),
     );
+  }
+
+  Widget appBar(
+      AiModel aiModel, ChatController chatController, BuildContext context) {
+    return Obx(() => ListTile(
+          leading: GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              )),
+          title: Text(
+            aiModel.modelName.toUpperCase(),
+            // style: AppTheme.bodyTextStyle(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          subtitle: Text(
+            chatController.isTyping ? "typing..." : "",
+            style: const TextStyle(color: Colors.white),
+          ),
+          trailing: GestureDetector(
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Obx(
+                    () => Container(
+                      height: 200,
+                      decoration: const BoxDecoration(
+                        color: AppTheme.surfaceColor,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 15.w,
+                          vertical: 15.h,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "TEMPERATURE : ${chatController.temperature.toStringAsFixed(2)}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.31.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SfSlider(
+                              min: 0.0,
+                              max: 1.0,
+                              value: chatController.temperature,
+                              activeColor: AppTheme.secondaryColor,
+                              onChanged: (dynamic value) {
+                                chatController.onChangeTemperature(value);
+                              },
+                            ),
+                            widgetSpace(10),
+                            Text(
+                              "MAX TOKENS : ${chatController.maxTokens.toStringAsFixed(0)}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.31.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SfSlider(
+                              min: 20.0,
+                              max: aiModel.modelMaxTokens.toDouble(),
+                              value: chatController.maxTokens,
+                              activeColor: AppTheme.secondaryColor,
+                              showTicks: true,
+                              showLabels: true,
+                              enableTooltip: true,
+                              onChanged: (dynamic value) {
+                                chatController.onChangeMaxToken(value);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: const Icon(
+              Icons.filter_list_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ));
   }
 
   Widget textFormField(
@@ -53,57 +136,58 @@ class ChatScreen extends StatelessWidget {
       onTap: () async {},
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: TextFormField(
-          style: const TextStyle(color: Colors.white),
-          validator: (value) {
-            if (value == '') {
-              return 'Please Enter label';
-            }
-            return null;
-          },
-          controller: chatController.textEditingController,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: AppTheme.surfaceColor,
-            suffixIcon: GestureDetector(
-                onTap: () async {
-                  await chatController.sendMessage();
-                },
-                child: const Icon(
-                  Icons.send,
-                  color: Colors.white,
-                )),
+        child: Obx(() => TextFormField(
+              style: const TextStyle(color: Colors.white),
+              validator: (value) {
+                if (value == '') {
+                  return 'Please Enter label';
+                }
+                return null;
+              },
+              controller: chatController.textEditingController,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppTheme.surfaceColor,
+                suffixIcon: !chatController.isTyping
+                    ? GestureDetector(
+                        onTap: () async {
+                          await chatController.sendMessage();
+                        },
+                        child: const Icon(
+                          Icons.send,
+                          color: Colors.white,
+                        ))
+                    : LoadingIndicator().spinkit,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                  borderSide: const BorderSide(
+                    color: AppTheme.primaryColor,
+                    width: 1,
+                  ),
+                ),
 
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20.r),
-              borderSide: const BorderSide(
-                color: AppTheme.primaryColor,
-                width: 1,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                  borderSide: const BorderSide(
+                    color: AppTheme.primaryColor,
+                    width: 1,
+                  ),
+                ),
+                focusColor: AppTheme.primaryColor,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: AppTheme.primaryColor,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                // prefixIcon: const Icon(
+                //   Icons.terminal,
+                //   color: AppTheme.primaryColor,
+                // ),
               ),
-            ),
-
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20.r),
-              borderSide: const BorderSide(
-                color: AppTheme.primaryColor,
-                width: 1,
-              ),
-            ),
-            focusColor: AppTheme.primaryColor,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: AppTheme.primaryColor,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            // prefixIcon: const Icon(
-            //   Icons.terminal,
-            //   color: AppTheme.primaryColor,
-            // ),
-          ),
-          cursorColor: const Color(0xff65D1BA),
-        ),
+              cursorColor: const Color(0xff65D1BA),
+            )),
       ),
     );
   }
@@ -171,7 +255,7 @@ class ChatScreen extends StatelessWidget {
                 ),
               )
             : SelectableText(
-                message.text,
+                "YOU : ${message.text}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 15.sp,

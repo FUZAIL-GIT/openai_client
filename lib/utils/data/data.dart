@@ -74,4 +74,22 @@ class Data {
       modelTrainingDataDate: DateTime(2019, 10),
     ),
   ];
+  static List<AiModel> CODExModelList = [
+    AiModel(
+      modelName: "code-davinci-002",
+      parentModelName: "Codex",
+      modelDescription:
+          "	Most capable Codex model. Particularly good at translating natural language to code. In addition to completing code, also supports inserting completions within code.",
+      modelMaxTokens: 8000,
+      modelTrainingDataDate: DateTime(2021, 1),
+    ),
+    AiModel(
+      modelName: "code-cushman-001",
+      parentModelName: "Codex",
+      modelDescription:
+          "Almost as capable as Davinci Codex, but slightly faster. This speed advantage may make it preferable for real-time applications.",
+      modelMaxTokens: 2048,
+      modelTrainingDataDate: DateTime(2021, 1),
+    ),
+  ];
 }
