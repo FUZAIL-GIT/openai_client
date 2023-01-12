@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.openai_client">
+
    <application
         android:label="openai_client"
         android:name="${applicationName}"

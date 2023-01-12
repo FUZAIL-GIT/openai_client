@@ -43,14 +43,6 @@ class Data {
   ];
   static List<AiModel> GPTModelList = [
     AiModel(
-      modelName: "text-davinci-003",
-      parentModelName: "GPT-3",
-      modelDescription:
-          "Most capable GPT-3 model. Can do any task the other models can do, often with higher quality, longer output and better instruction-following. Also supports inserting completions within text.",
-      modelMaxTokens: 4000,
-      modelTrainingDataDate: DateTime(2021, 1),
-    ),
-    AiModel(
       modelName: "text-curie-001",
       parentModelName: "GPT-3",
       modelDescription: "Very capable, but faster and lower cost than Davinci.",
@@ -72,6 +64,14 @@ class Data {
           "Capable of very simple tasks, usually the fastest model in the GPT-3 series, and lowest cost.",
       modelMaxTokens: 2048,
       modelTrainingDataDate: DateTime(2019, 10),
+    ),
+    AiModel(
+      modelName: "text-davinci-003",
+      parentModelName: "GPT-3",
+      modelDescription:
+          "Most capable GPT-3 model. Can do any task the other models can do, often with higher quality, longer output and better instruction-following. Also supports inserting completions within text.",
+      modelMaxTokens: 4000,
+      modelTrainingDataDate: DateTime(2021, 1),
     ),
   ];
   static List<AiModel> CODExModelList = [

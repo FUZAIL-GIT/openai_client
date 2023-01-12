@@ -53,23 +53,25 @@ class ChatScreen extends StatelessWidget {
           ),
           subtitle: Text(
             chatController.isTyping ? "typing..." : "",
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: AppTheme.primaryColor),
           ),
           trailing: GestureDetector(
             onTap: () {
               showModalBottomSheet<void>(
                 context: context,
+                backgroundColor: Colors.grey.shade900,
+                shape: RoundedRectangleBorder(
+                  // <-- SEE HERE
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
                 builder: (BuildContext context) {
                   return Obx(
-                    () => Container(
+                    () => SizedBox(
                       height: 200,
-                      decoration: const BoxDecoration(
-                        color: AppTheme.surfaceColor,
-                      ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 15.w,
-                          vertical: 15.h,
+                          horizontal: 20.w,
+                          vertical: 20.h,
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -106,9 +108,6 @@ class ChatScreen extends StatelessWidget {
                               max: aiModel.modelMaxTokens.toDouble(),
                               value: chatController.maxTokens,
                               activeColor: AppTheme.secondaryColor,
-                              showTicks: true,
-                              showLabels: true,
-                              enableTooltip: true,
                               onChanged: (dynamic value) {
                                 chatController.onChangeMaxToken(value);
                               },

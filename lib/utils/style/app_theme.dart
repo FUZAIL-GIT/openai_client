@@ -2,10 +2,24 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static const Color backgroundColor = Color(0xff121212);
-  static const Color surfaceColor = Color(0xff1D1D1D);
+  static Color surfaceColor = Colors.white.withOpacity(0.2);
   static const Color primaryColor = Color(0xffBB86FC);
   static const Color errorColor = Color(0xffCF6679);
   static const Color secondaryColor = Color(0xff03DAC6);
+  static List<BoxShadow> neumorphismShadow = [
+    BoxShadow(
+      blurRadius: 17,
+      spreadRadius: 1,
+      offset: const Offset(8, 8),
+      color: const Color(0xff000000).withOpacity(0.4),
+    ),
+    BoxShadow(
+      blurRadius: 17,
+      spreadRadius: 1,
+      offset: const Offset(-8, -8),
+      color: const Color(0xffA5A1A1).withOpacity(0.16),
+    ),
+  ];
   static const List<LinearGradient> linearGradient = [
     LinearGradient(
       colors: [

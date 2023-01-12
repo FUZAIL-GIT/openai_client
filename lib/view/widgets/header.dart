@@ -30,10 +30,9 @@ class Header extends StatelessWidget {
     }
 
     Widget leading = GetStorage().read('imageUrl') != null
-        ? Image(
-            height: 45,
-            width: 45,
-            image: NetworkImage(
+        ? CircleAvatar(
+            radius: 23.5,
+            backgroundImage: NetworkImage(
               GetStorage().read('imageUrl'),
             ),
           )

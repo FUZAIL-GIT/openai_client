@@ -4,11 +4,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:openai_client/model/ai_model_model.dart';
-import 'package:openai_client/utils/data/data.dart';
+import 'package:openai_client/utils/data/data.dart' as data;
 import 'package:openai_client/utils/style/app_theme.dart';
-import 'package:openai_client/utils/widget_helper.dart';
+import 'package:openai_client/utils/toaster.dart';
+import 'package:openai_client/view/components/gradient_text.dart';
 import 'package:openai_client/view/screens/chat_screen.dart';
 
+import '../../controller/api_key_controller.dart';
 import '../../controller/mode_controller.dart';
 
 class ModelList extends StatelessWidget {
@@ -47,14 +49,14 @@ class ModelList extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: StaggeredGrid.count(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
                   children: [
                     for (int index = modeController.currentMode.modeName
                                     .compareTo("Text Completions") ==
                                 0
-                            ? Data.GPTModelList.length - 1
-                            : Data.CODExModelList.length - 1;
+                            ? data.Data.GPTModelList.length - 1
+                            : data.Data.CODExModelList.length - 1;
                         index >= 0;
                         index--)
                       textCompletions(
@@ -62,8 +64,8 @@ class ModelList extends StatelessWidget {
                         modeController.currentMode.modeName
                                     .compareTo("Text Completions") ==
                                 0
-                            ? Data.GPTModelList[index]
-                            : Data.CODExModelList[index],
+                            ? data.Data.GPTModelList[index]
+                            : data.Data.CODExModelList[index],
                       ),
                   ],
                 ),
@@ -74,31 +76,42 @@ class ModelList extends StatelessWidget {
   }
 
   Widget textCompletions(int index, AiModel aiModel) {
+    APIKeyController apiKeyController = Get.put(APIKeyController());
+
     return GestureDetector(
         child: Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.r),
-        color: Colors.white.withOpacity(0.15),
-
+        // color: Colors.grey.shade700,
+        gradient: AppTheme.darkLinearGradient,
+        boxShadow: AppTheme.neumorphismShadow,
         // gradient: AppTheme.linearGradient[2],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            aiModel.modelName.toUpperCase(),
-            textAlign: TextAlign.center,
-            style: GoogleFonts.cabin(
+          GradientText(
+            aiModel.modelName.replaceAll(RegExp('text-'), '').toUpperCase(),
+            gradient: const LinearGradient(colors: [
+              // AppTheme.secondaryColor,
+              // AppTheme.secondaryColor,
+              Colors.white70,
+              Colors.white70,
+            ]),
+            style: GoogleFonts.orbitron(
               textStyle: TextStyle(
-                fontSize: 20.sp,
-                color: Colors.white,
+                fontSize: 17.sp,
+                color: Colors.cyan,
                 fontWeight: FontWeight.w900,
               ),
             ),
           ),
-          widgetSpace(6),
+          const Divider(
+            color: Colors.amber,
+            thickness: 1.2,
+          ),
           Text(
             aiModel.modelDescription.toUpperCase(),
             textAlign: TextAlign.center,
@@ -115,24 +128,38 @@ class ModelList extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    color: AppTheme.backgroundColor,
+                  ),
                   onPressed: () {
-                    Get.to(
-                      () => ChatScreen(
-                        aiModel: aiModel,
-                      ),
-                    );
+                    if (apiKeyController
+                        .textEditingController.text.isNotEmpty) {
+                      Get.to(
+                        () => ChatScreen(
+                          aiModel: aiModel,
+                        ),
+                      );
+                    } else {
+                      Toaster().errorToast("First Enter Your Api Key");
+                    }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.backgroundColor,
-                    // side: const BorderSide(
-                    //   width: 1,
-                    //   color: AppTheme.primaryColor,
-                    // ),
+                    backgroundColor: AppTheme.secondaryColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r)),
                   ),
-                  child: const Text("Try it >"),
+                  label: Text(
+                    "CHAT",
+                    style: GoogleFonts.orbitron(
+                      textStyle: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppTheme.backgroundColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

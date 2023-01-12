@@ -27,7 +27,7 @@ class GoogleAuth {
 
 Future<void> deleteData() async {
   GetStorage storage = GetStorage();
-
+  await storage.write('YOUR_API_KEY', '');
   await storage.write("email", null);
   await storage.write("imageUrl", null);
   await storage.write("displayName", null);

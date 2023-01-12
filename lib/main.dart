@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,9 +10,14 @@ import 'package:openai_client/view/screens/login_screen.dart';
 import 'utils/style/app_theme.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await GetStorage.init();
 
-  runApp(const MyApp());
+  runApp(DevicePreview(
+    enabled: false,
+    builder: (_) => const MyApp(), // Wrap your app
+  ));
 }
 
 class MyApp extends StatelessWidget {
