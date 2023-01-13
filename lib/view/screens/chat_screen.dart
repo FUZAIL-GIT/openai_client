@@ -61,7 +61,6 @@ class ChatScreen extends StatelessWidget {
                 context: context,
                 backgroundColor: Colors.grey.shade900,
                 shape: RoundedRectangleBorder(
-                  // <-- SEE HERE
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 builder: (BuildContext context) {
@@ -240,6 +239,7 @@ class ChatScreen extends StatelessWidget {
                     ),
                   ),
                   child: AnimatedTextKit(
+                    totalRepeatCount: 0,
                     onFinished: () {
                       chatController.scroll();
                     },
